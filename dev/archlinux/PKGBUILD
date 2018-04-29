@@ -1,0 +1,29 @@
+#Contributor: Hector Mtz-Seara <hseara#at#gmail#com>
+pkgname=python-sysbead
+_pkgname=sysbead
+pkgver=2018.a1
+pkgrel=1
+pkgdesc="Library to construct particle based systems for simulation."
+url=""
+license=('LGPL3')
+arch=('any')
+depends=('python-numpy')
+makedepends=('python-setuptools')
+source=("./${_pkgname}.tar.gz")
+sha1sums=(SKIP)
+
+build() {
+  cd "${srcdir}/${_pkgname}"
+  python setup.py build
+}
+
+package(){
+  cd "${srcdir}/${_pkgname}"
+  python setup.py install --root="${pkgdir}/" --optimize=1 --skip-build
+
+  # Remove left over directories from distribute utils.
+  find ${pkgdir} -type d -name "__pycache__" -exec rm -r {} \; -prune
+
+  # Install (New) GPL license
+  install -D -m444 ${srcdir}/${_pkgname}/LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
